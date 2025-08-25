@@ -117,10 +117,11 @@
           timerTargetTime = document.querySelector("#timer-input").value;
           const leftTime = timerTargetTime * 60 * 1000 - timerRunningTime;
           if (leftTime <= 0) {
-            clearInterval(timerIntervalId);
             timerIntervalId = null;
             timerRunningTime = 0;
             alert("시간 종료!");
+            clearInterval(timerIntervalId);
+            return;
           }
           timerBox.textContent = new Date(leftTime).toISOString().slice(14, 19); // 분-초만 짜름
         }, 500);
