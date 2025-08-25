@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>2. 콜백 지옥</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      #log {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid black;
+        background-color: ghostwhite;
+        min-height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>2. 콜백 지옥(Callback Hell) 체험</h1>
+      <p>
+        아래 버튼을 누르면 순차적인 비동기 작업이 실행됩니다. 코드의 구조에
+        주목하세요.
+      </p>
+      <button id="start-btn">작업 시작</button>
+      <div id="log"></div>
+    </div>
+
+    <script>
+      const startBtn = document.getElementById("start-btn");
+      const logDiv = document.getElementById("log");
+
+      // 로그를 화면에 출력하는 헬퍼 함수
+      const log = (message) => {
+        logDiv.innerHTML += `<div>${message}</div>`;
+      };
+
+      /*
+        ==================================================================================
+        🎯 콜백 지옥(Callback Hell)이란?
+        ==================================================================================
+        - 비동기 작업을 '순서대로' 실행하기 위해 콜백 함수 안에 또 다른 비동기 함수를 호출하는 구조가
+          반복되면서 코드가 계속해서 안쪽으로 깊어지는 현상을 말합니다.
+        - 코드의 들여쓰기가 깊어져 가독성이 매우 나빠집니다.
+        - 에러 처리가 복잡해지며, 코드 수정 및 유지보수가 어려워집니다.
+        */
+
+      startBtn.addEventListener("click", () => {
+        logDiv.innerHTML = ""; // 이전 로그 초기화
+        log("작업을 시작합니다...");
+
+        // 🧑‍💻 여기에 코드를 작성하세요. (setTimeout을 중첩하여 콜백 지옥을 만드세요)
+        // 1. 1초 뒤에 "1. 서버에서 사용자 정보 가져오기 완료" 로그를 찍습니다.
+        // 2. 첫 번째 작업이 끝난 후, 다시 1초 뒤에 "2. 사용자의 게시물 목록 가져오기 완료" 로그를 찍습니다.
+        // 3. 두 번째 작업이 끝난 후, 다시 1초 뒤에 "3. 게시물의 댓글 정보 가져오기 완료"와 "모든 작업이 끝났습니다." 로그를 찍습니다.
+      });
+    </script>
+  </body>
+</html>
