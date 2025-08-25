@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @font-face {
+        font-family: "CAFE24-PRO-UP";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Cafe24PROUP.woff2")
+          format("woff2");
+        font-weight: normal;
+        font-display: swap;
+      }
+      #now-time,
+      #stop-watch-time,
+      #timer-time {
+        font-family: "CAFE24-PRO-UP";
+      }
+    </style>
+  </head>
+  <body>
+    <h1>현재시간</h1>
+    <section id="now-time">00:00:00</section>
+    <h1>스톱워치</h1>
+    <section id="stop-watch-time">00:00</section>
+    <section>
+      <button id="stop-watch-start">시작</button>
+      <button id="stop-watch-pause">일시정지</button>
+      <button id="stop-watch-reset">리셋</button>
+    </section>
+    <h1>타이머</h1>
+    <section id="timer-time">00:00</section>
+    <section>
+      <label
+        ><input
+          id="timer-input"
+          type="number"
+          min="1"
+          max="30"
+          value="5"
+        />분</label
+      >
+      <button id="timer-start">시작</button>
+      <button id="timer-pause">일시정지</button>
+    </section>
+    <script>
+      // 현재시간
+      const timeBox = document.querySelector("#now-time");
+      // 비동기? -> 지연 처리
+      // setTimeout
+      // setInterval
+      //   let number = 0;
+      setInterval(() => {
+        const now = new Date();
+        // timeBox.textContent = now.toTimeString();
+        // timeBox.textContent = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        function pad(num) {
+          return String(num).padStart(2, "0");
+        }
+        timeBox.textContent = `${pad(now.getHours())}:${pad(
+          now.getMinutes()
+        )}:${pad(now.getSeconds())}`;
+        // timeBox.textContent = number++;
+      }, 500); // 부동소수점 때문인지는 모르겠지만 1초를 딱 맞춰서 하면 한 번에 2초가 올라가는 버그.
+
+      // 스탑워치
+      const stopwatchBox = document.querySelector("#stop-watch-time");
+      const startBtn = document.querySelector("#stop-watch-start");
+      const pauseBtn = document.querySelector("#stop-watch-pause");
+      const resetBtn = document.querySelector("#stop-watch-reset");
+
+      let intervalId = null; // setInterval 마다의 id...
+      let runningTime = 0; // 지난 시간 ms
+      let startTime = 0; // 마지막 시작 시간.
+
+      startBtn.addEventListener("click", () => {
+        if (intervalId) return; // 무시 -> 새로 시작하지 않음
+        startTime = Date.now() - runningTime; // 일시정지를 고려
+        intervalId = setInterval(() => {
+          const now = Date.now();
+          runningTime = now - startTime;
+          stopwatchBox.textContent = new Date(runningTime)
+            .toISOString()
+            .slice(14, 19); // 분-초만 짜름
+        }, 500);
+      });
+
+      pauseBtn.addEventListener("click", () => {
+        clearInterval(intervalId);
+        intervalId = null;
+      });
+
+      resetBtn.addEventListener("click", () => {
+        clearInterval(intervalId);
+        intervalId = null;
+        runningTime = 0;
+        stopwatchBox.textContent = "00:00";
+      });
+
+      // 스탑워치
+      const timerBox = document.querySelector("#timer-time");
+      const timerStartBtn = document.querySelector("#timer-start");
+      const timerPauseBtn = document.querySelector("#timer-pause");
+
+      let timerIntervalId = null; // setInterval 마다의 id...
+      let timerRunningTime = 0; // 지난 시간 ms
+      let timerStartTime = 0; // 마지막 시작 시간.
+      let timerTargetTime = 0; // 목표 시간
+
+      timerStartBtn.addEventListener("click", () => {
+        if (timerIntervalId) return; // 무시 -> 새로 시작하지 않음
+        timerStartTime = Date.now() - timerRunningTime; // 일시정지를 고려
+        timerIntervalId = setInterval(() => {
+          const now = Date.now();
+          timerRunningTime = now - timerStartTime;
+          timerTargetTime = document.querySelector("#timer-input").value;
+          const leftTime = timerTargetTime * 60 * 1000 - timerRunningTime;
+          if (leftTime <= 0) {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            timerRunningTime = 0;
+            alert("시간 종료!");
+          }
+          timerBox.textContent = new Date(leftTime).toISOString().slice(14, 19); // 분-초만 짜름
+        }, 500);
+      });
+
+      pauseBtn.addEventListener("click", () => {
+        clearInterval(timerIntervalId);
+        timerIntervalId = null;
+      });
+    </script>
+  </body>
+</html>
